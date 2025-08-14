@@ -15,7 +15,8 @@ class Processor:
 
     def process_stream(self, src: TextIO, dst: TextIO) -> None:
         for raw_line in src:
-            parsed = parse_line(raw_line, self.config.input)
+            replaced_line = self._apply_global_replacements(raw_line)
+            parsed = parse_line(replaced_line, self.config.input)
             handled = False
             for rule in self.compiled_rules:
                 m = rule.matches(parsed)
@@ -48,3 +49,9 @@ class Processor:
             else:
                 dst.write(parsed.original_line + "\n")
 
+    def _apply_global_replacements(self, raw_line: str) -> str:
+        line_no_nl = raw_line.rstrip("\n")
+        for what, with_what in self.config.global_replace.items():
+            if what:
+                line_no_nl = line_no_nl.replace(what, with_what)
+        return line_no_nl + ("\n" if raw_line.endswith("\n") else "")

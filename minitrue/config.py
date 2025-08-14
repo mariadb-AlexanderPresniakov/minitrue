@@ -69,6 +69,7 @@ class Config(BaseModel):
     description: str | None = Field(default=None, description="Optional description of this rules file")
     input: InputFormatConfig = Field(default_factory=InputFormatConfig)
     output: OutputFormatConfig = Field(default_factory=OutputFormatConfig)
+    global_replace: dict[str, str] = Field(default_factory=dict, description="Map of literal replacements applied before parsing and rules")
     rules: list[RuleConfig] = Field(default_factory=list)
     unmatched: str = Field(default="pass")
 

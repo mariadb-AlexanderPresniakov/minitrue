@@ -1,6 +1,6 @@
-03/Jul/2025 09:27:21 [INFO] (access_logger) {('CP Server Thread-4',)} Got incoming GET request from "209.171.0.161" to "/cmapi/0.4.0/node/status". uid: 1e8238af-9c60-4c80-824f-12abc2614fb9
+03/Jul/2025 09:27:21 [INFO] (access_logger) {('CP Server Thread-4',)} Got incoming GET request from "109.0.171.161" to "/cmapi/0.4.0/node/status". uid: 1e8238af-9c60-4c80-824f-12abc2614fb9
 03/Jul/2025 09:27:21 [DEBUG] (cmapi_server) {('CP Server Thread-4',)} get_status starts
 03/Jul/2025 09:27:21 [INFO] (root) {('CP Server Thread-4',)} DBRM._send_command: Command readonly was requested with value None
 03/Jul/2025 09:27:21 [DEBUG] (cmapi_server) {('CP Server Thread-4',)} get_status returns {'timestamp': '2025-07-03 09:27:21.236548', 'uptime': 58212566, 'dbrm_mode': 'slave', 'cluster_mode': 'readonly', 'dbroots': ['2'], 'module_id': 1, 'services': [{'name': 'workernode', 'pid': 1372421}, {'name': 'PrimProc', 'pid': 1372443}, {'name': 'WriteEngineServer', 'pid': 1372692}]}
-03/Jul/2025 09:27:21 [INFO] (access_logger) {('CP Server Thread-4',)} Finished processing incoming GET request from "209.171.0.161" to "/cmapi/0.4.0/node/status" in 0.1854 seconds. uid: 1e8238af-9c60-4c80-824f-12abc2614fb9
+03/Jul/2025 09:27:21 [INFO] (access_logger) {('CP Server Thread-4',)} Finished processing incoming GET request from "109.0.171.161" to "/cmapi/0.4.0/node/status" in 0.1854 seconds. uid: 1e8238af-9c60-4c80-824f-12abc2614fb9
 03/Jul/2025 11:01:30 [DEBUG] (root) {('CP Server Thread-11',)} Call "show -p ActiveState --value" on service "mcs-workernode" with "systemctl show -p ActiveState --value mcs-workernode".

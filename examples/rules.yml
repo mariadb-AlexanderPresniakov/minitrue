@@ -2,6 +2,12 @@ description: "Example rules for minitrue"
 
 unmatched: pass
 
+global_replace:
+  "109.0.171.161": "host1"
+  "109.0.171.162": "host2"
+  "109.0.171.163": "host3"
+  "/cmapi/0.4.0": ""
+
 input:
   # Optional parser with named groups. Only "msg" is special; anything else is user-defined. All the groups are available to the rules.
   regex: ^(?P<dt>\d{2}/[A-Za-z]{3}/\d{4} \d{2}:\d{2}:\d{2}) \[(?P<level>[^\]]+)\] \((?P<logger>[^\)]+)\) \{(?P<actor>[^}]+)\} (?P<msg>.*)$
@@ -18,6 +24,7 @@ rules:
   - type: rewrite
     description: Rewrite the request message
     when:
-      regex: 'Got incoming (?P<method>PUT|GET|POST|DELETE|PATCH|OPTIONS|HEAD) request from \"(?P<ip>[\d\.]+)\" to \"(?P<url>.+?)\". uid: (?P<req_uid>[a-f0-9-]+)'
-    # 'replace' provides the full new message. Placeholders are populated only from input regex named groups and {msg}.
-    replace: "{ip} --> {method} {url}"
+      regex: 'Got incoming (?P<method>PUT|GET|POST|DELETE|PATCH|OPTIONS|HEAD) request from \"(?P<host>.+?)\" to \"(?P<url>.+?)\". uid: (?P<req_uid>[a-f0-9-]+)'
+    # 'replace' provides the full new message. Placeholders are populated from input regex named groups and {msg},
+    # plus named groups captured by this rewrite rule's own regex applied to {msg}.
+    replace: "{host} --> {method} {url}"

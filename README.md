@@ -29,6 +29,10 @@ unmatched: pass   # or "skip". If the line is not matched by any rule, do we pas
 
 description: "My service logs normalization rules"
 
+global_replace:
+  # Optional global string replacements to apply to each line before parsing and rules.
+  "192.168.1.2": "host1"
+
 input:
   # Optional parser with named groups. Only "msg" is special; anything else is user-defined. All the groups are available to the rules.
   # If this is not provided, the entire line becomes {msg} and no extra fields are added.
@@ -68,3 +72,4 @@ rules:
 - Rewrite templates and `output.format` can reference `{msg}` and any other named groups captured by `input.regex` (e.g. {dt}, {logger}, etc)
 - `output.format` controls how final lines are printed for pass and unmatched-pass cases. Also it provides a default format for rewrite rules (aside from {msg}).
 - Optional top-level `description` lets you document the ruleset.
+- Optional top-level `global_replace` applies literal string replacements to each line before parsing and rules.
