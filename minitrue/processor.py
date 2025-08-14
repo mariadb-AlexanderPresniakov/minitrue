@@ -14,9 +14,12 @@ class Processor:
     compiled_rules: list[Rule]
 
     def process_stream(self, src: TextIO, dst: TextIO) -> None:
-        for raw_line in src:
+        for line_number, raw_line in enumerate(src, start=1):
             replaced_line = self._apply_global_replacements(raw_line)
             parsed = parse_line(replaced_line, self.config.input)
+            # Inject original line number into fields for templates
+            parsed.fields = dict(parsed.fields)
+            parsed.fields["line_no"] = str(line_number)
             handled = False
             for rule in self.compiled_rules:
                 m = rule.matches(parsed)

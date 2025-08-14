@@ -36,6 +36,7 @@ class RuleWhen(BaseModel):
 class BaseRuleConfig(BaseModel):
     when: RuleWhen
     description: str | None = Field(default=None, description="Optional human-readable description of the rule")
+    enabled: bool = Field(default=True, description="Whether this rule is active; defaults to true")
 
 
 class SkipRuleConfig(BaseRuleConfig):
@@ -83,6 +84,8 @@ class Config(BaseModel):
     def compile_rules(self) -> list[Rule]:
         compiled: list[Rule] = []
         for rc in self.rules:
+            if not getattr(rc, "enabled", True):
+                continue
             flags = _parse_flags(rc.when.flags)
             pattern = re.compile(rc.when.regex, flags)
             if isinstance(rc, SkipRuleConfig):

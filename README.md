@@ -52,6 +52,7 @@ rules:
 
   - type: pass
     description: Allow OK lines through
+    enabled: false  # Simple way to disable a rule without removing it from the file
     when:
       regex: ^OK
 
@@ -73,3 +74,4 @@ rules:
 - `output.format` controls how final lines are printed for pass and unmatched-pass cases. Also it provides a default format for rewrite rules (aside from {msg}).
 - Optional top-level `description` lets you document the ruleset.
 - Optional top-level `global_replace` applies literal string replacements to each line before parsing and rules.
+- Each rule can be disabled by setting `enabled: false`.
