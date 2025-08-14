@@ -6,7 +6,7 @@ from typing import Literal
 from typing import Annotated
 
 import yaml
-from pydantic import BaseModel, Field, ValidationError, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 from .rules import PassRule, RewriteRule, Rule, SkipRule
 from .types import ParsedLine
@@ -117,11 +117,7 @@ def load_config(path: str | Path) -> Config:
     """Load YAML config from 'path' and validate into a Config model."""
     with open(path, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f) or {}
-    try:
-        return Config.model_validate(data)
-    except ValidationError as e:
-        # Re-raise with a cleaner message for CLI users
-        raise ValueError(str(e))
+    return Config.model_validate(data)
 
 
 def parse_line(raw_line: str, input_cfg: InputFormatConfig) -> ParsedLine:

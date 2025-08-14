@@ -25,6 +25,5 @@ rules:
     description: Rewrite the request message
     when:
       regex: 'Got incoming (?P<method>PUT|GET|POST|DELETE|PATCH|OPTIONS|HEAD) request from \"(?P<host>.+?)\" to \"(?P<url>.+?)\". uid: (?P<req_uid>[a-f0-9-]+)'
-    # 'replace' provides the full new message. Placeholders are populated from input regex named groups and {msg},
-    # plus named groups captured by this rewrite rule's own regex applied to {msg}.
-    replace: "{host} --> {method} {url}"
+    # 'replace' provides the full new message. It is a Jinja2 template.
+    replace: "{{ host }} --> {{ method }} {{ url }}"

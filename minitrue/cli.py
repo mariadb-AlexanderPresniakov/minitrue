@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import logging
 import sys
 
 from .config import Config, load_config
@@ -17,6 +18,11 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    logging.basicConfig(
+        level=logging.INFO,
+        stream=sys.stderr,
+        format="%(asctime)s %(levelname)s %(name)s - %(message)s",
+    )
     cfg: Config = load_config(args.rules)
     processor = Processor(config=cfg, compiled_rules=cfg.compile_rules())
 

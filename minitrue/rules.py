@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+import logging
+from dataclasses import dataclass, field
 from typing import Optional, Pattern
+from jinja2 import Environment, StrictUndefined, Template
 
 from .types import ParsedLine
 
+logger = logging.getLogger(__name__)
+JINJA_ENV: Environment = Environment(undefined=StrictUndefined, autoescape=False)
 
 class Rule:
     """Abstract base for processing a parsed line.
@@ -54,17 +58,18 @@ class RewriteRule(BaseRegexRule):
     """
     template: str
     scope: str = "message"  # "message" or "line"
+    _compiled_template: Template = field(init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        self._compiled_template = JINJA_ENV.from_string(self.template)
 
     def _render_template(self, parsed_line: ParsedLine) -> str:
-        """Render using input fields, {msg}, and this rule's match groups."""
+        """Render using input fields, msg, and this rule's match groups via Jinja2."""
         values: dict[str, str] = parsed_line.as_mapping()
         match = self.pattern.search(parsed_line.msg)
         if match is not None:
             values.update({k: (v or "") for k, v in match.groupdict().items()})
-        try:
-            return self.template.format(**values)
-        except Exception:
-            return parsed_line.msg
+        return self._compiled_template.render(**values)
 
     def apply(self, parsed_line: ParsedLine) -> tuple[bool, ParsedLine]:
         """Apply rewrite based on scope.

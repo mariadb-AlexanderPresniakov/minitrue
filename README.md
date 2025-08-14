@@ -1,7 +1,7 @@
 # minitrue
-A flexible CLI tool that processes text files using declarative YAML rules. It can skip, pass, or rewrite log lines — based on patterns you define — just like a miniature Ministry of Truth
 Minitrue — YAML-driven line rewriter
 ====================================
+A flexible CLI tool that processes text files using declarative YAML rules. It can skip, pass, or rewrite log lines — based on patterns you define — just like a miniature Ministry of Truth
 
 Minitrue reads lines from a file or stdin, applies YAML-configured rules to skip, pass, or rewrite lines, and writes to a file or stdout.
 
@@ -60,9 +60,13 @@ rules:
     description: Rewrite the request message
     when:
       regex: 'Got incoming (?P<method>PUT|GET|POST|DELETE|PATCH|OPTIONS|HEAD) request from \"(?P<ip>[\d\.]+)\" to \"(?P<url>.+?)\". uid: (?P<req_uid>[a-f0-9-]+)'
-    # 'replace' provides the full new message. Placeholders are populated from input regex named groups and {msg},
-    # plus named groups captured by this rewrite rule's own regex applied to {msg}.
-    replace: "{ip} --> {method} {url}"
+    # 'replace' provides the full new message. Jinja2 is used for templating.
+    # Placeholders include:
+    # - msg from the input line
+    # - named groups from input regex (e.g., dt, level)
+    # - named groups captured by this rewrite rule's own regex applied to msg (e.g., ip)
+    # - line_no -- the line number in the input file
+    replace: "{{ ip }} --> {{ method }} {{ url }}"
     # optional rewrite scope:
     # scope: message (default value) -- rewrites {msg} only
     # scope: line -- replaces the whole line bypassing output.format

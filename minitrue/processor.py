@@ -40,10 +40,7 @@ class Processor:
         fmt = self.config.output.format
         if fmt:
             mapping = parsed.as_mapping()
-            try:
-                dst.write(fmt.format(**mapping) + "\n")
-            except Exception:
-                dst.write(parsed.msg + "\n")
+            dst.write(fmt.format(**mapping) + "\n")
         else:
             # No output.format: write original line or reconstructed message-only rewrite
             if parsed.msg_span is not None and parsed.msg != parsed.original_line[parsed.msg_span[0]:parsed.msg_span[1]]:
