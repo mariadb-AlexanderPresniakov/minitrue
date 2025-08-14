@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "minitrue"
+version = "0.1.0"
+description = "A simple line-rewriting tool driven by YAML rules: skip, pass, rewrite."
+authors = ["Alexander Presnyakov <alexander.presniakov@mariadb.com>"]
+readme = "README.md"
+packages = [{ include = "minitrue" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+PyYAML = "^6.0.2"
+pydantic = "^2.8.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+mypy = "^1.11.1"
+
+[tool.poetry.scripts]
+minitrue = "minitrue.cli:main"
+
+[build-system]
+requires = ["poetry-core>=1.6.0"]
+build-backend = "poetry.core.masonry.api"
+

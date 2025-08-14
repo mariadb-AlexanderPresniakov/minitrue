@@ -1,0 +1,50 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import TextIO
+
+from .config import Config, parse_line
+from .rules import Rule
+from .types import ParsedLine
+
+
+@dataclass
+class Processor:
+    config: Config
+    compiled_rules: list[Rule]
+
+    def process_stream(self, src: TextIO, dst: TextIO) -> None:
+        for raw_line in src:
+            parsed = parse_line(raw_line, self.config.input)
+            handled = False
+            for rule in self.compiled_rules:
+                m = rule.matches(parsed)
+                if m:
+                    should_print, new_parsed = rule.apply(parsed)
+                    if should_print:
+                        self._emit(new_parsed, dst)
+                    handled = True
+                    break
+            if not handled:
+                if self.config.unmatched == "pass":
+                    self._emit(parsed, dst)
+
+    def _emit(self, parsed: ParsedLine, dst: TextIO) -> None:
+        if parsed.line_override is not None:
+            dst.write(parsed.line_override + "\n")
+            return
+        fmt = self.config.output.format
+        if fmt:
+            mapping = parsed.as_mapping()
+            try:
+                dst.write(fmt.format(**mapping) + "\n")
+            except Exception:
+                dst.write(parsed.msg + "\n")
+        else:
+            # No output.format: write original line or reconstructed message-only rewrite
+            if parsed.msg_span is not None and parsed.msg != parsed.original_line[parsed.msg_span[0]:parsed.msg_span[1]]:
+                start, end = parsed.msg_span
+                dst.write(parsed.original_line[:start] + parsed.msg + parsed.original_line[end:] + "\n")
+            else:
+                dst.write(parsed.original_line + "\n")
+

@@ -1,0 +1,23 @@
+description: "Example rules for minitrue"
+
+unmatched: pass
+
+input:
+  # Optional parser with named groups. Only "msg" is special; anything else is user-defined. All the groups are available to the rules.
+  regex: ^(?P<dt>\d{2}/[A-Za-z]{3}/\d{4} \d{2}:\d{2}:\d{2}) \[(?P<level>[^\]]+)\] \((?P<logger>[^\)]+)\) \{(?P<actor>[^}]+)\} (?P<msg>.*)$
+
+output:
+  # Optional output format for emitted lines. In this case, we skip logger and actor fields.
+  format: "{dt} [{level}] {msg}"
+
+rules:
+  - type: skip
+    when:
+      regex: Call "(?P<cmd>.+?)" on service "(?P<service>.+?)" with .+
+
+  - type: rewrite
+    description: Rewrite the request message
+    when:
+      regex: 'Got incoming (?P<method>PUT|GET|POST|DELETE|PATCH|OPTIONS|HEAD) request from \"(?P<ip>[\d\.]+)\" to \"(?P<url>.+?)\". uid: (?P<req_uid>[a-f0-9-]+)'
+    # 'replace' provides the full new message. Placeholders are populated only from input regex named groups and {msg}.
+    replace: "{ip} --> {method} {url}"
