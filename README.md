@@ -1,5 +1,5 @@
 # minitrue
-Minitrue — YAML-driven line rewriter
+Rules-driven line rewriter
 ====================================
 A flexible CLI tool that processes text files using declarative YAML rules. It can skip, pass, or rewrite log lines — based on patterns you define — just like a miniature Ministry of Truth
 
@@ -71,6 +71,9 @@ rules:
     # scope: message (default value) -- rewrites {msg} only
     # scope: line -- replaces the whole line bypassing output.format
     scope: message
+
+header: "# BEGIN"  # Optional Jinja header section that will be written before the first line is processed
+footer: "# END"  # Optional Jinja footer section that will be written after the last line is processed
 ```
 
 - If `input.regex` is omitted, the entire line is passed to the rules as `{msg}`.

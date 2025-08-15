@@ -27,3 +27,7 @@ rules:
       regex: 'Got incoming (?P<method>PUT|GET|POST|DELETE|PATCH|OPTIONS|HEAD) request from \"(?P<host>.+?)\" to \"(?P<url>.+?)\". uid: (?P<req_uid>[a-f0-9-]+)'
     # 'replace' provides the full new message. It is a Jinja2 template.
     replace: "{{ host }} --> {{ method }} {{ url }}"
+
+header: "# BEGIN"
+
+footer: "# END"

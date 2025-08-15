@@ -4,12 +4,12 @@ import re
 import logging
 from dataclasses import dataclass, field
 from typing import Optional, Pattern
-from jinja2 import Environment, StrictUndefined, Template
+from jinja2 import Template
 
 from .types import ParsedLine
+from .jinja import compile_template
 
 logger = logging.getLogger(__name__)
-JINJA_ENV: Environment = Environment(undefined=StrictUndefined, autoescape=False)
 
 class Rule:
     """Abstract base for processing a parsed line.
@@ -61,7 +61,7 @@ class RewriteRule(BaseRegexRule):
     _compiled_template: Template = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
-        self._compiled_template = JINJA_ENV.from_string(self.template)
+        self._compiled_template = compile_template(self.template)
 
     def _render_template(self, parsed_line: ParsedLine) -> str:
         """Render using input fields, msg, and this rule's match groups via Jinja2."""

@@ -73,6 +73,9 @@ class Config(BaseModel):
     global_replace: dict[str, str] = Field(default_factory=dict, description="Map of literal replacements applied before parsing and rules")
     rules: list[RuleConfig] = Field(default_factory=list)
     unmatched: str = Field(default="pass")
+    header: str | None = Field(default=None, description="Optional Jinja header template rendered once before lines")
+    footer: str | None = Field(default=None, description="Optional Jinja footer template rendered once after lines")
+
 
     @field_validator("unmatched")
     @classmethod

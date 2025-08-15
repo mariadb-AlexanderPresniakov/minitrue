@@ -6,6 +6,7 @@ from typing import TextIO
 from .config import Config, parse_line
 from .rules import Rule
 from .types import ParsedLine
+from .jinja import compile_template
 
 
 @dataclass
@@ -14,6 +15,11 @@ class Processor:
     compiled_rules: list[Rule]
 
     def process_stream(self, src: TextIO, dst: TextIO) -> None:
+        # Optional header
+        if self.config.header:
+            header_tmpl = compile_template(self.config.header)
+            dst.write(header_tmpl.render() + "\n")
+
         for line_number, raw_line in enumerate(src, start=1):
             replaced_line = self._apply_global_replacements(raw_line)
             parsed = parse_line(replaced_line, self.config.input)
@@ -32,6 +38,11 @@ class Processor:
             if not handled:
                 if self.config.unmatched == "pass":
                     self._emit(parsed, dst)
+
+        # Optional footer
+        if self.config.footer:
+            footer_tmpl = compile_template(self.config.footer)
+            dst.write(footer_tmpl.render() + "\n")
 
     def _emit(self, parsed: ParsedLine, dst: TextIO) -> None:
         if parsed.line_override is not None:
